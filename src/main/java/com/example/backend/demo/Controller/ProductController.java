@@ -31,7 +31,7 @@ public class ProductController {
         return "please check your url again";
     }
 
-    @RequestMapping("/products/{prodId}")
+    @RequestMapping("/product/{prodId}")
     public Product getProductById(@PathVariable int prodId){
         return service.getAllProducts().get(prodId-1);
     }
