@@ -3,13 +3,12 @@ package com.example.backend.demo.Controller;
 import com.example.backend.demo.Model.Product;
 import com.example.backend.demo.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api")
 public class ProductController {
 
@@ -17,7 +16,7 @@ public class ProductController {
     private ProductService service;
 
 
-    @RequestMapping("/")
+    @RequestMapping("/welcome")
     public String greet(){
         return "Welcome to my fucking website";
     }
@@ -30,6 +29,11 @@ public class ProductController {
     @RequestMapping("/error")
     public String errorMessage(){
         return "please check your url again";
+    }
+
+    @RequestMapping("/products/{prodId}")
+    public Product getProductById(@PathVariable int prodId){
+        return service.getAllProducts().get(prodId-1);
     }
 
 }
