@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,6 +71,17 @@ public class ProductController {
     public JsonMapperBuilderCustomizer customizer() {
         return builder -> builder
                 .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
+    }
+
+
+    //creating the mapping for the images
+    @GetMapping("/product/{prodId}/image")
+    public ResponseEntity<byte[]> getImageByProdId(@PathVariable int prodId){
+
+        Product product = service.getProductById(prodId);
+        byte [] imageFile = product.getImageDate();
+
+        return ResponseEntity.ok().contentType(MediaType.valueOf(product.getImageType())).body(imageFile);
     }
 
 

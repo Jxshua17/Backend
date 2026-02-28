@@ -22,7 +22,7 @@ public class Product {
     //TODO -> the generated value type "sequence" doesn't give me what i want as far as the id is concerned. i want to be able to get the count from the database and do a plus one for the data being added.
     //create an annotation maybe.
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @ColumnDefault("true")
     private int id;
     private String name;
