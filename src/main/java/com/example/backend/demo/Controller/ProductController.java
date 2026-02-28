@@ -84,5 +84,31 @@ public class ProductController {
         return ResponseEntity.ok().contentType(MediaType.valueOf(product.getImageType())).body(imageFile);
     }
 
+    //updating
+    /*@PutMapping("/product/{prodId}")
+    public ResponseEntity<?> updateProductById(@PathVariable int prodId, @RequestPart Product product,
+                                                     @RequestPart MultipartFile imageFile){
+
+        try {
+            Product product1 = service.getProductById(prodId);
+            product1.setId(product.getId());
+            Product product2 = service.updateProduct(product1, imageFile);
+
+            return new ResponseEntity<>(product2, HttpStatus.ACCEPTED);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }*/
+
+    //deleting
+    @DeleteMapping("/product/{prodId}")
+    public ResponseEntity<?> deleteProductById(@PathVariable int prodId){
+
+        service.deleteProductById(prodId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }
