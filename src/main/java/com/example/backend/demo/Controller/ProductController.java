@@ -3,9 +3,14 @@ package com.example.backend.demo.Controller;
 import com.example.backend.demo.Model.Product;
 import com.example.backend.demo.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.DeserializationConfig;
+import tools.jackson.databind.DeserializationFeature;
 
 import java.util.List;
 
@@ -44,5 +49,28 @@ public class ProductController {
         }
 
     }
+
+    @PostMapping("/product")
+    public ResponseEntity<?> addProduct(@RequestPart Product product,
+                                              @RequestPart MultipartFile imageFile){
+
+        try {
+            Product product1 = service.addProduct(product, imageFile);
+            return new ResponseEntity<>(product1, HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Source - https://stackoverflow.com/a/79854456
+// Posted by dani-vta, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-02-26, License - CC BY-SA 4.0
+
+    @Bean
+    public JsonMapperBuilderCustomizer customizer() {
+        return builder -> builder
+                .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
+    }
+
 
 }
