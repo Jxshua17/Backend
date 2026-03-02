@@ -38,16 +38,20 @@ public class ProductService {
         return productRepo.save(product);
     }
 
-    /*public Product updateProduct(Product product, MultipartFile imageFile) throws IOException {
+    public Product updateProduct(int prodId, Product product, MultipartFile imageFile) throws IOException {
         product.setImageDate(imageFile.getBytes());
         product.setImageName(imageFile.getName());
         product.setImageType(imageFile.getContentType());
 
         return productRepo.save(product);
-    }*/
+    }
 
     public void deleteProductById(int prodId){
         Product product = getProductById(prodId);
         productRepo.delete(product);
+    }
+
+    public List<Product> searchByKeyword(String keyword) {
+        return productRepo.search(keyword);
     }
 }

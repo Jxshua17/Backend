@@ -85,21 +85,19 @@ public class ProductController {
     }
 
     //updating
-    /*@PutMapping("/product/{prodId}")
+    //TODO -> solve the issue of not returning the full data if you change the image and a text field together and click update. this creates a new entry.
+    @PutMapping("/product/{prodId}")
     public ResponseEntity<?> updateProductById(@PathVariable int prodId, @RequestPart Product product,
                                                      @RequestPart MultipartFile imageFile){
 
         try {
-            Product product1 = service.getProductById(prodId);
-            product1.setId(product.getId());
-            Product product2 = service.updateProduct(product1, imageFile);
-
+            Product product2 = service.updateProduct(prodId, product, imageFile);
             return new ResponseEntity<>(product2, HttpStatus.ACCEPTED);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-    }*/
+    }
 
     //deleting
     @DeleteMapping("/product/{prodId}")
@@ -110,5 +108,11 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //searching based on name/description/brand/category.
+    @GetMapping("/products/search")
+    public ResponseEntity<List<Product>> searchByKeyword(@RequestParam String keyword){
+        List<Product> products = service.searchByKeyword(keyword);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 
 }
