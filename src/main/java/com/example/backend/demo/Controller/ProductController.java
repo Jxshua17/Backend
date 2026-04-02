@@ -1,7 +1,9 @@
 package com.example.backend.demo.Controller;
 
 import com.example.backend.demo.Model.Product;
+import com.example.backend.demo.Model.Users;
 import com.example.backend.demo.Service.ProductService;
+import com.example.backend.demo.Service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.databind.DeserializationConfig;
 import tools.jackson.databind.DeserializationFeature;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,29 +26,53 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
+    @Autowired
+    private UsersService usersService;
+
+    @RequestMapping(value = "/login")
+    public ResponseEntity<?> isUserPresent(@RequestParam String username, @RequestParam String password) {
+        /*List<Users> users = new ArrayList<>();
+        users = usersService.getAllUsers();*/
+
+        Users n = new Users();
+        n.setId(1);
+        n.setUsername("Joshua");
+        n.setPassword("qwerty");
+
+        //ohk, i think at this point, this endpoint is receiving the username and password but the issue now seems to be at the frontend with the login button
+
+
+        if (n.getUsername().equals(username) && n.getPassword().equals(password) ) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        }
+
+    }
+
 
     @RequestMapping("/welcome")
-    public String greet(){
+    public String greet() {
         return "Welcome to my fucking website";
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts(){
+    public ResponseEntity<List<Product>> getAllProducts() {
         return new ResponseEntity<>(service.getAllProducts(), HttpStatus.OK);
     }
 
     @RequestMapping("/error")
-    public String errorMessage(){
+    public String errorMessage() {
         return "please check your url again";
     }
 
     @RequestMapping("/product/{prodId}")
-    public ResponseEntity<Product> getProductById(@PathVariable int prodId){
+    public ResponseEntity<Product> getProductById(@PathVariable int prodId) {
         Product product = service.getProductById(prodId);
 
-        if (product != null){
+        if (product != null) {
             return new ResponseEntity<>(product, HttpStatus.OK);
-        } else{
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -53,12 +80,12 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<?> addProduct(@RequestPart Product product,
-                                              @RequestPart MultipartFile imageFile){
+                                        @RequestPart MultipartFile imageFile) {
 
         try {
             Product product1 = service.addProduct(product, imageFile);
             return new ResponseEntity<>(product1, HttpStatus.CREATED);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -76,10 +103,10 @@ public class ProductController {
 
     //creating the mapping for the images
     @GetMapping("/product/{prodId}/image")
-    public ResponseEntity<byte[]> getImageByProdId(@PathVariable int prodId){
+    public ResponseEntity<byte[]> getImageByProdId(@PathVariable int prodId) {
 
         Product product = service.getProductById(prodId);
-        byte [] imageFile = product.getImageDate();
+        byte[] imageFile = product.getImageDate();
 
         return ResponseEntity.ok().contentType(MediaType.valueOf(product.getImageType())).body(imageFile);
     }
@@ -88,12 +115,12 @@ public class ProductController {
     //TODO -> solve the issue of not returning the full data if you change the image and a text field together and click update. this creates a new entry.
     @PutMapping("/product/{prodId}")
     public ResponseEntity<?> updateProductById(@PathVariable int prodId, @RequestPart Product product,
-                                                     @RequestPart MultipartFile imageFile){
+                                               @RequestPart MultipartFile imageFile) {
 
         try {
             Product product2 = service.updateProduct(prodId, product, imageFile);
             return new ResponseEntity<>(product2, HttpStatus.ACCEPTED);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -101,7 +128,7 @@ public class ProductController {
 
     //deleting
     @DeleteMapping("/product/{prodId}")
-    public ResponseEntity<?> deleteProductById(@PathVariable int prodId){
+    public ResponseEntity<?> deleteProductById(@PathVariable int prodId) {
 
         service.deleteProductById(prodId);
 
@@ -110,7 +137,7 @@ public class ProductController {
 
     //searching based on name/description/brand/category.
     @GetMapping("/products/search")
-    public ResponseEntity<List<Product>> searchByKeyword(@RequestParam String keyword){
+    public ResponseEntity<List<Product>> searchByKeyword(@RequestParam String keyword) {
         List<Product> products = service.searchByKeyword(keyword);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
