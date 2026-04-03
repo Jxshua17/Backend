@@ -26,27 +26,28 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    @Autowired
     private UsersService usersService;
+    @Autowired
+    public void setUsersService(UsersService usersService){
+        this.usersService = usersService;
+    }
 
     @RequestMapping(value = "/login")
-    public ResponseEntity<?> isUserPresent(@RequestParam String username, @RequestParam String password) {
-        /*List<Users> users = new ArrayList<>();
-        users = usersService.getAllUsers();*/
+    public ResponseEntity<?> isUserPresent(@RequestBody Users user) {
 
-        Users n = new Users();
-        n.setId(1);
-        n.setUsername("Joshua");
-        n.setPassword("qwerty");
+//        Users n = new Users();
+//        n.setId(1);
+//        n.setUsername("Joshua");
+//        n.setPassword("qwerty");
+//
+//
+//        if (n.getUsername().equals(username) && n.getPassword().equals(password) ) {
+//            return new ResponseEntity<>(true, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+//        }
 
-        //ohk, i think at this point, this endpoint is receiving the username and password but the issue now seems to be at the frontend with the login button
-
-
-        if (n.getUsername().equals(username) && n.getPassword().equals(password) ) {
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(usersService.isUserPresent(user), HttpStatus.OK);
 
     }
 
