@@ -28,6 +28,7 @@ public class UsersService {
 
     public boolean isUserPresent(Users user){
 
+        System.out.println("user found");
         Authentication auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
         return auth.isAuthenticated();

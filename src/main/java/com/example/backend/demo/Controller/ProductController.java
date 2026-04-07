@@ -32,21 +32,11 @@ public class ProductController {
         this.usersService = usersService;
     }
 
-    @RequestMapping(value = "/login")
-    public ResponseEntity<?> isUserPresent(@RequestBody Users user) {
-
-//        Users n = new Users();
-//        n.setId(1);
-//        n.setUsername("Joshua");
-//        n.setPassword("qwerty");
-//
-//
-//        if (n.getUsername().equals(username) && n.getPassword().equals(password) ) {
-//            return new ResponseEntity<>(true, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-//        }
-
+    @PostMapping(value = "/login")
+    public ResponseEntity<?> isUserPresent(@ModelAttribute Users user) {
+        /*the modelattribute annotation binds request parameters together so in this case, it solved my
+        issue of logging in from the frontend by binding the username and the password together which happen to be requests
+        made on the frontend*/
         return new ResponseEntity<>(usersService.isUserPresent(user), HttpStatus.OK);
 
     }
@@ -95,11 +85,11 @@ public class ProductController {
 // Posted by dani-vta, modified by community. See post 'Timeline' for change history
 // Retrieved 2026-02-26, License - CC BY-SA 4.0
 
-    @Bean
+    /*@Bean
     public JsonMapperBuilderCustomizer customizer() {
         return builder -> builder
                 .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
-    }
+    }*/
 
 
     //creating the mapping for the images
