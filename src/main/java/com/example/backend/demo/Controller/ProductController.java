@@ -49,6 +49,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
+        System.out.println("why are you not working?");
         return new ResponseEntity<>(service.getAllProducts(), HttpStatus.OK);
     }
 
