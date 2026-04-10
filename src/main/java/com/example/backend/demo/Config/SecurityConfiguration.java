@@ -32,10 +32,10 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/api", "/api/login", "/api/welcome", "/api/products", "/api/product/{prodId}/image")
+                        .requestMatchers("/api", "/api/login", "/api/products", "/api/product/{prodId}/image")
                         .permitAll()
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
+                //.formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

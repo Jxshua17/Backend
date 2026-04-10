@@ -2,6 +2,7 @@ package com.example.backend.demo.Controller;
 
 import com.example.backend.demo.Model.Product;
 import com.example.backend.demo.Model.Users;
+import com.example.backend.demo.Service.JWTService;
 import com.example.backend.demo.Service.ProductService;
 import com.example.backend.demo.Service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +33,25 @@ public class ProductController {
         this.usersService = usersService;
     }
 
+    private JWTService jwtService;
+    @Autowired
+    public void setJwtService(JWTService jwtService) {
+        this.jwtService = jwtService;
+    }
+
     @PostMapping(value = "/login")
-    public ResponseEntity<?> isUserPresent(@ModelAttribute Users user) {
+    public boolean isUserPresent(@ModelAttribute Users user) {
         /*the modelattribute annotation binds request parameters together so in this case, it solved my
         issue of logging in from the frontend by binding the username and the password together which happen to be requests
         made on the frontend*/
-        return new ResponseEntity<>(usersService.isUserPresent(user), HttpStatus.OK);
+        System.out.println(jwtService.generateToken(user.getUsername()));
+
+        return true;
 
     }
 
 
-    @RequestMapping("/welcome")
+    @GetMapping("/welcome")
     public String greet() {
         return "Welcome to my fucking website";
     }
@@ -53,7 +62,7 @@ public class ProductController {
         return new ResponseEntity<>(service.getAllProducts(), HttpStatus.OK);
     }
 
-    @RequestMapping("/error")
+    @GetMapping("/error")
     public String errorMessage() {
         return "please check your url again";
     }
