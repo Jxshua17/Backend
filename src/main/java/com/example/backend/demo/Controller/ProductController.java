@@ -2,6 +2,7 @@ package com.example.backend.demo.Controller;
 
 import com.example.backend.demo.Model.Product;
 import com.example.backend.demo.Model.Users;
+import com.example.backend.demo.Service.JWTService;
 import com.example.backend.demo.Service.ProductService;
 import com.example.backend.demo.Service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,42 +27,49 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    @Autowired
     private UsersService usersService;
+    @Autowired
+    public void setUsersService(UsersService usersService){
+        this.usersService = usersService;
+    }
 
-    @RequestMapping(value = "/login")
-    public ResponseEntity<?> isUserPresent(@RequestParam String username, @RequestParam String password) {
-        /*List<Users> users = new ArrayList<>();
-        users = usersService.getAllUsers();*/
+    private JWTService jwtService;
+    @Autowired
+    public void setJwtService(JWTService jwtService) {
+        this.jwtService = jwtService;
+    }
 
-        Users n = new Users();
-        n.setId(1);
-        n.setUsername("Joshua");
-        n.setPassword("qwerty");
+    @PostMapping(value = "/login")
+    public ResponseEntity<?> isUserPresent(@ModelAttribute Users user) {
+        /*the modelattribute annotation binds request parameters together so in this case, it solved my
+        issue of logging in from the frontend by binding the username and the password together which happen to be requests
+        made on the frontend*/
+        System.out.println(jwtService.generateToken(user.getUsername()));
 
-        //ohk, i think at this point, this endpoint is receiving the username and password but the issue now seems to be at the frontend with the login button
+        boolean isThisUserPresent = usersService.isUserPresent(user);
+        String userJWTToken = jwtService.generateToken(user.getUsername());
 
+        ArrayList<Object> arrayList = new ArrayList<>();
+        arrayList.add(isThisUserPresent);
+        arrayList.add(userJWTToken);
 
-        if (n.getUsername().equals(username) && n.getPassword().equals(password) ) {
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(arrayList, HttpStatus.OK);
 
     }
 
 
-    @RequestMapping("/welcome")
+    @GetMapping("/welcome")
     public String greet() {
         return "Welcome to my fucking website";
     }
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
+        System.out.println("why are you not working?");
         return new ResponseEntity<>(service.getAllProducts(), HttpStatus.OK);
     }
 
-    @RequestMapping("/error")
+    @GetMapping("/error")
     public String errorMessage() {
         return "please check your url again";
     }
@@ -94,11 +102,11 @@ public class ProductController {
 // Posted by dani-vta, modified by community. See post 'Timeline' for change history
 // Retrieved 2026-02-26, License - CC BY-SA 4.0
 
-    @Bean
+    /*@Bean
     public JsonMapperBuilderCustomizer customizer() {
         return builder -> builder
                 .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
-    }
+    }*/
 
 
     //creating the mapping for the images
