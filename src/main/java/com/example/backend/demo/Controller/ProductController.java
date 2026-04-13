@@ -40,13 +40,20 @@ public class ProductController {
     }
 
     @PostMapping(value = "/login")
-    public boolean isUserPresent(@ModelAttribute Users user) {
+    public ResponseEntity<?> isUserPresent(@ModelAttribute Users user) {
         /*the modelattribute annotation binds request parameters together so in this case, it solved my
         issue of logging in from the frontend by binding the username and the password together which happen to be requests
         made on the frontend*/
         System.out.println(jwtService.generateToken(user.getUsername()));
 
-        return true;
+        boolean isThisUserPresent = usersService.isUserPresent(user);
+        String userJWTToken = jwtService.generateToken(user.getUsername());
+
+        ArrayList<Object> arrayList = new ArrayList<>();
+        arrayList.add(isThisUserPresent);
+        arrayList.add(userJWTToken);
+
+        return new ResponseEntity<>(arrayList, HttpStatus.OK);
 
     }
 
