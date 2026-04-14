@@ -12,10 +12,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -49,19 +46,18 @@ public class JWTService {
                 .compact();
     }
 
-    public Key getKey(){
+    private Key getKey(){
         byte[] bytes = Decoders.BASE64.decode(privateKey);
         return Keys.hmacShaKeyFor(bytes);
     }
 
-
-    public Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token){
         return Jwts.parser()
                 .verifyWith((SecretKey) getKey())
                 .build().parseSignedClaims(token).getPayload();
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimResolver){
+    private  <T> T extractClaim(String token, Function<Claims, T> claimResolver){
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
@@ -74,7 +70,7 @@ public class JWTService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public boolean isTokenExpired(String token){
+    private boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
     public boolean validateToken(String token, UserDetails details) {
